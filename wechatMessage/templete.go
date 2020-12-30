@@ -15,5 +15,5 @@ const Content =
 `
 
 
-const ParamTable = `>{name}:<font color=\"{color}\">{value}</font>
+const ParamTable = `>{name}: <font color=\"{color}\">{value}</font>
 `

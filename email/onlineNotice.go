@@ -76,7 +76,9 @@ const OnlineNotice_tpl = `<head>
 
 const ParamTable = ` <tr>
                     <td>
-                        {name}：
+                        {name}:
+                    </td>
+					<td>
                         {value}
                     </td>
                 </tr>

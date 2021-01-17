@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const OnlineNotice_tpl = `<head>
+const NewUsers_tpl = `<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
@@ -47,9 +47,7 @@ const OnlineNotice_tpl = `<head>
                 <tr>
                     <td>
                         <h4>
-                            <span class="tag danger">高危</span>
                             {title}
-                            <span class="system">windows</span>
                         </h4>
                     </td>
                 </tr>
@@ -74,32 +72,33 @@ const OnlineNotice_tpl = `<head>
 `
 
 
-type OnlineNoticeTpl struct {
+type NewUsersTpl struct {
 	serverSetting MailServerSetting `json:"MailServerSetting"`
 	doc   DocItem
 }
 
-func (self *OnlineNoticeTpl) SetTitle(title string) {
+
+func (self *NewUsersTpl) SetTitle(title string) {
 	self.doc.Title = title
 }
 
-func (self *OnlineNoticeTpl) SetOrganization(organization string) {
+func (self *NewUsersTpl) SetOrganization(organization string) {
 	self.doc.Organization = organization
 }
 
-func (self *OnlineNoticeTpl) SetMessageType(messageType string) {
+func (self *NewUsersTpl) SetMessageType(messageType string) {
 	self.doc.MessageType = messageType
 }
 
-func (self *OnlineNoticeTpl) SetContent(param interface{}) {
+func (self *NewUsersTpl) SetContent(param interface{}) {
 	self.doc.Fields = createFields(param)
 }
 
-func (self *OnlineNoticeTpl) MailServerSetting(ServerSetting MailServerSetting) {
+func (self *NewUsersTpl) MailServerSetting(ServerSetting MailServerSetting) {
 	self.serverSetting = ServerSetting
 }
 
-func (m *OnlineNoticeTpl) RenderParam(v Field) string {
+func (m *NewUsersTpl) RenderParam(v Field) string {
 	ts := ParamTable
 
 	ts = strings.Replace(ts, "{name}", v.Name, 1)
@@ -107,8 +106,8 @@ func (m *OnlineNoticeTpl) RenderParam(v Field) string {
 	return ts
 }
 
-func (m *OnlineNoticeTpl) RenderContent(v DocItem) string {
-	ts := OnlineNotice_tpl
+func (m *NewUsersTpl) RenderContent(v DocItem) string {
+	ts := NewUsers_tpl
 	var tplParams string = ""
 	ts = strings.Replace(ts, "{messageType}", v.MessageType, 1)
 	ts = strings.Replace(ts, "{title}", v.Title, 1)
@@ -123,7 +122,7 @@ func (m *OnlineNoticeTpl) RenderContent(v DocItem) string {
 	return ts
 }
 
-func (self *OnlineNoticeTpl)SendMail(toUser string) error {
+func (self *NewUsersTpl)SendMail(toUser string) error {
 	emailBody:= self.RenderContent(self.doc)
 	if emailBody == ""{
 		return errors.New("html is nil")
@@ -132,7 +131,7 @@ func (self *OnlineNoticeTpl)SendMail(toUser string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", self.serverSetting.User)
 	m.SetHeader("To", toUser)
-	m.SetHeader("Subject", "攻击者上线通知") // 邮件标题
+	m.SetHeader("Subject", "账号分配通知") // 邮件标题
 	m.SetBody("text/html", emailBody) // 邮件内容
 	// m.Attach("/home/Alex/lolcat.jpg") //附件
 

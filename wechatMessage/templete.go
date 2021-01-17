@@ -1,7 +1,6 @@
 package wechatMessage
 
-const TplPage =
-`{
+const TplPage = `{
     "msgtype": "markdown",
     "markdown": {
         "content": "{content}"
@@ -9,11 +8,9 @@ const TplPage =
 }
 `
 
-const Content =
-`{title}
+const Content = `{title}
 {tplParam}
 `
-
 
 const ParamTable = `>{name}: <font color=\"{color}\">{value}</font>
 `

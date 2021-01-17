@@ -2,6 +2,7 @@ package wechatMessage
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -17,17 +18,14 @@ type DocItem struct {
 
 // 字段
 type Field struct {
-	Name  string    `json:"name"`  // 字段名称
+	Name  string `json:"name"`  // 字段名称
 	Color string `json:"color"` // 字段颜色
-	Value string      `json:"Value"` // 字段值
+	Value string `json:"Value"` // 字段值
 }
 
-
-
-
 type Message struct {
-	Token		string
-	doc         DocItem
+	Token string
+	doc   DocItem
 }
 
 func (m *Message) SetToken(Token string) {
@@ -42,7 +40,6 @@ func (m *Message) SetContent(param interface{}) {
 	m.doc.Fields = createFields(param)
 }
 
-
 func (m *Message) RenderParam(v Field) string {
 	ts := ParamTable
 
@@ -56,7 +53,7 @@ func (m *Message) RenderContent(v DocItem) string {
 	ts := Content
 	var tplParams string = ""
 	ts = strings.Replace(ts, "{title}", v.Title, 1)
-	if len(v.Fields) >0{
+	if len(v.Fields) > 0 {
 		for _, item := range v.Fields {
 			tpl := m.RenderParam(item)
 			tplParams = fmt.Sprintf("%s%s", tplParams, tpl)
@@ -95,13 +92,25 @@ func (m *Message) Send() error {
 	return nil
 }
 
+func Tojson() string {
+	var GroupsName []string
+	GroupsName = append(GroupsName, "123123123")
+	GroupsName = append(GroupsName, "测试机")
+
+	str, err := json.Marshal(GroupsName) //json序列化
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	return string(str)
+}
+
 type MessageWechat struct {
 	DangerLevel string `json:"DangerLevel" doc:"危险等级" color:"warning"`
-	HostName string `json:"HostName" doc:"主机名" color:"comment"`
-	Os string `json:"Os" doc:"系统类型" color:"comment"`
+	HostName    string `json:"HostName" doc:"主机名" color:"comment"`
+	Os          string `json:"Os" doc:"系统类型" color:"comment"`
 	ConnectAddr string `json:"ConnectAddr" doc:"连接地址" color:"comment"`
-	Tips string `json:"Tips" doc:"提示" color:"comment"`
-	Addr string `json:"Addr" doc:"地理位置" color:"comment"`
+	Tips        string `json:"Tips" doc:"提示" color:"comment"`
+	Addr        string `json:"Addr" doc:"地理位置" color:"comment"`
 }
 
 func createFields(param interface{}) []Field {
@@ -130,9 +139,9 @@ func createFields(param interface{}) []Field {
 	for i := 0; i < cnt; i++ {
 		ty := typ.Field(i)
 		field := Field{
-			Name:        ty.Tag.Get("doc"),
-			Color:       ty.Tag.Get("color"),
-			Value:   	 val.Field(i).Interface().(string),
+			Name:  ty.Tag.Get("doc"),
+			Color: ty.Tag.Get("color"),
+			Value: val.Field(i).Interface().(string),
 		}
 		fields = append(fields, field)
 	}

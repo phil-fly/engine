@@ -49,7 +49,6 @@ const OnlineNotice_tpl = `<head>
                         <h4>
                             <span class="tag danger">高危</span>
                             {title}
-                            <span class="system">windows</span>
                         </h4>
                     </td>
                 </tr>
